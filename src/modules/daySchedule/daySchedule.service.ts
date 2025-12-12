@@ -10,7 +10,7 @@ const prisma = new PrismaClient();
 // GET ALL
 export const get = async (): Promise<DaySchedule[]> => {
   return prisma.daySchedule.findMany({
-    include: { mode: true, appointments: true },
+    include: { mode: true, appointments: { include: { child: true } } },
     orderBy: [
       { date: "asc" },
       { startTime: "asc" }
@@ -24,7 +24,7 @@ export const getById = async (id: number): Promise<DaySchedule | null> => {
     where: { id },
     include: {
       mode: true,
-      appointments: true,
+      appointments: { include: { child: true } },
     },
   });
 };
@@ -58,6 +58,21 @@ export const update = async (id: number, data: any): Promise<DaySchedule> => {
 
 // DELETE
 export const remove = async (id: number): Promise<DaySchedule> => {
+  const schedule = await prisma.daySchedule.findUnique({
+    where: { id },
+    include: { appointments: { include: { child: true } } },
+  });
+
+  if (!schedule) {
+    throw new Error("El horario no existe");
+  }
+
+  if (schedule.appointments.length > 0) {
+    throw new Error(
+      "No se puede eliminar el horario porque tiene citas asignadas"
+    );
+  }
+
   return prisma.daySchedule.delete({
     where: { id },
   });
@@ -130,7 +145,7 @@ export const getAvailable = async (): Promise<any[]> => {
   const schedules = await prisma.daySchedule.findMany({
     include: {
       mode: true,
-      appointments: true,
+      appointments: { include: { child: true } },
     },
     orderBy: [
       { date: "asc" },
