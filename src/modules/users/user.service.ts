@@ -27,10 +27,10 @@ export const updateUser = async (id: number, data: any) => {
   });
 };
 
-export const deleteUser = async (id: number) => {
-  return prismaClient.user.delete({
+export const getCoaches = async () => {
+  return prismaClient.user.findMany({
     where: {
-      id,
+      role: 'COACH',
     },
   });
 };

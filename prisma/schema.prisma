@@ -19,16 +19,19 @@ model User {
   updatedAt    DateTime      @updatedAt
   children     Child[]
   appointments Appointment[]
+  daySchedules DaySchedule[]
 }
 
 enum Role {
   ADMIN
   USER
+  COACH
 }
 
 model TrainingMode {
   id          Int     @id @default(autoincrement())
   name        String  @unique
+  coachCost   Float   @default(0)
   description String?
   isActive    Boolean @default(true)
 
@@ -43,11 +46,13 @@ model DaySchedule {
   endTime   DateTime
   capacity  Int
   modeId    Int
+  coachId   Int? // Optional for now to support legacy data, or existing
 
   mode         TrainingMode  @relation(fields: [modeId], references: [id])
+  coach        User?         @relation(fields: [coachId], references: [id])
   appointments Appointment[]
 
-  @@unique([date, startTime, endTime])
+  @@unique([date, startTime, endTime, coachId, modeId])
 }
 
 model Appointment {

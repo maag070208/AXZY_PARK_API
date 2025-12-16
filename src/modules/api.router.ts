@@ -1,3 +1,4 @@
+
 import { Router } from "express";
 
 import indexRoute from "./index.routes";
@@ -6,6 +7,7 @@ import trainingModeRoute from "./trainingMode/trainingMode.controller";
 import dayScheduleRoute from "./daySchedule/daySchedule.routes";
 import appointmentRoute from "./appointment/appointment.routes";
 import childrenRoute from "./children/children.routes";
+import paymentsRoute from "./payments/payments.routes";
 
 const apiRouter = Router();
 
@@ -15,4 +17,5 @@ apiRouter.use("/training-modes", trainingModeRoute);
 apiRouter.use("/day-schedule", dayScheduleRoute);
 apiRouter.use("/appointments", appointmentRoute);
 apiRouter.use("/children", childrenRoute);
+apiRouter.use("/payments", paymentsRoute);
 export default apiRouter;

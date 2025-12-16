@@ -65,3 +65,13 @@ export const createUser = async (req: Request, res: Response) => {
     return res.status(500).json(createTResult(null, error.message));
   }
 };
+
+export const getCoachesList = async (req: Request, res: Response) => {
+  try {
+    const { getCoaches } = require("./user.service");
+    const coaches = await getCoaches();
+    return res.status(200).json(createTResult(coaches));
+  } catch (error: any) {
+    return res.status(500).json(createTResult(null, error.message));
+  }
+};

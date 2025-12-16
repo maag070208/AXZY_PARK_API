@@ -6,7 +6,7 @@ export const createTResult = <T>(data: T, message: string[] = [], ): TResult<T> 
 
     return {
         data,
-        message: hasMessage ? message : ["Success"],
+        messages: hasMessage ? message : ["Success"],
         success
     }
 

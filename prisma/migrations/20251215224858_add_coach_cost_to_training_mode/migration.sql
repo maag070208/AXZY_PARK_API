@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "TrainingMode" ADD COLUMN     "coachCost" DOUBLE PRECISION NOT NULL DEFAULT 0;

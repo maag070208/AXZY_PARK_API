@@ -10,7 +10,7 @@ const prisma = new PrismaClient();
 // GET ALL
 export const get = async (): Promise<DaySchedule[]> => {
   return prisma.daySchedule.findMany({
-    include: { mode: true, appointments: { include: { child: true } } },
+    include: { mode: true, coach: true, appointments: { include: { child: true } } },
     orderBy: [
       { date: "asc" },
       { startTime: "asc" }
@@ -24,6 +24,7 @@ export const getById = async (id: number): Promise<DaySchedule | null> => {
     where: { id },
     include: {
       mode: true,
+      coach: true,
       appointments: { include: { child: true } },
     },
   });
@@ -38,6 +39,7 @@ export const create = async (data: any): Promise<DaySchedule> => {
       endTime: new Date(data.endTime),
       capacity: data.capacity,
       modeId: data.modeId,
+      coachId: data.coachId, // Add coachId
     },
   });
 };
@@ -52,6 +54,7 @@ export const update = async (id: number, data: any): Promise<DaySchedule> => {
       endTime: data.endTime ? new Date(data.endTime) : undefined,
       capacity: data.capacity,
       modeId: data.modeId,
+      coachId: data.coachId, // Add coachId
     },
   });
 };
@@ -89,7 +92,7 @@ export const getByDate = async (dateStr: string): Promise<DaySchedule[]> => {
 
   return prisma.daySchedule.findMany({
     where: { date },
-    include: { mode: true },
+    include: { mode: true, coach: true },
     orderBy: { startTime: "asc" },
   });
 };
@@ -98,7 +101,7 @@ export const getByDate = async (dateStr: string): Promise<DaySchedule[]> => {
 export const getByMode = async (modeId: number): Promise<DaySchedule[]> => {
   return prisma.daySchedule.findMany({
     where: { modeId },
-    include: { mode: true },
+    include: { mode: true, coach: true },
     orderBy: [
       { date: "asc" },
       { startTime: "asc" },
@@ -113,7 +116,7 @@ export const getToday = async (): Promise<DaySchedule[]> => {
 
   return prisma.daySchedule.findMany({
     where: { date: today },
-    include: { mode: true },
+    include: { mode: true, coach: true },
     orderBy: { startTime: "asc" },
   });
 };
@@ -132,7 +135,7 @@ export const getWeek = async (): Promise<DaySchedule[]> => {
         lte: new Date(weekEnd),
       },
     },
-    include: { mode: true },
+    include: { mode: true, coach: true },
     orderBy: [
       { date: "asc" },
       { startTime: "asc" },
@@ -145,6 +148,7 @@ export const getAvailable = async (): Promise<any[]> => {
   const schedules = await prisma.daySchedule.findMany({
     include: {
       mode: true,
+      coach: true,
       appointments: { include: { child: true } },
     },
     orderBy: [

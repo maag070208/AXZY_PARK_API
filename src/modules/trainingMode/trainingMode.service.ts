@@ -20,6 +20,7 @@ export const create = async (data: any): Promise<TrainingMode> => {
       name: data.name,
       description: data.description ?? null,
       isActive: data.isActive ?? true,
+      coachCost: Number(data.coachCost ?? 0),
     },
   });
 };
@@ -34,6 +35,7 @@ export const update = async (
       name: data.name,
       description: data.description ?? null,
       isActive: data.isActive ?? true,
+      coachCost: Number(data.coachCost),
     },
   });
 };

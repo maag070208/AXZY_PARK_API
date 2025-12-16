@@ -5,6 +5,8 @@ export const securitySeed = async (prisma: PrismaClient) => {
   const admin = await adminSeed(prisma);
   const user1 = await user1Seed(prisma);
   const user2 = await user2Seed(prisma);
+  await coach1Seed(prisma);
+  await coach2Seed(prisma);
 
   await childrenSeed(prisma, user1.id, user2.id);
 };
@@ -97,6 +99,42 @@ const childrenSeed = async (
     create: {
       name: "Said Martínez",
       userId: user2Id,
+    },
+  });
+};
+
+// ---------------------------
+// COACH 1
+// ---------------------------
+const coach1Seed = async (prisma: PrismaClient) => {
+  const password = await bcrypt.hash("coach123", 10);
+
+  return prisma.user.upsert({
+    where: { email: "coach1@academy.com" },
+    update: {},
+    create: {
+      name: "Carlos Entrenador",
+      email: "coach1@academy.com",
+      password,
+      role: "COACH",
+    },
+  });
+};
+
+// ---------------------------
+// COACH 2
+// ---------------------------
+const coach2Seed = async (prisma: PrismaClient) => {
+  const password = await bcrypt.hash("coach123", 10);
+
+  return prisma.user.upsert({
+    where: { email: "coach2@academy.com" },
+    update: {},
+    create: {
+      name: "Luis Instructor",
+      email: "coach2@academy.com",
+      password,
+      role: "COACH",
     },
   });
 };

@@ -52,6 +52,9 @@ export const deleteTrainingMode = async (req: Request, res: Response) => {
     const deleted = await remove(Number(id));
     return res.status(200).json(createTResult(deleted));
   } catch (error: any) {
-    return res.status(500).json(createTResult(null, error.message));
+    
+    return res.status(500).json(createTResult(null, [
+      "No se pudo eliminar el modo de entrenamiento"
+    ]));
   }
 };

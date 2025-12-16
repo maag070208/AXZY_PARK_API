@@ -1,5 +1,5 @@
 export interface TResult<T> {
     data: T;
-    message: string[];
+    messages: string[];
     success: boolean;
 }
