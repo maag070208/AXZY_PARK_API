@@ -1,17 +1,15 @@
-import express from "express";
 import cors from "cors";
+import express from "express";
 import helmet from "helmet";
-import swaggerUi from "swagger-ui-express";
 import morgan from "morgan";
+import swaggerUi from "swagger-ui-express";
 import YAML from "yamljs";
-import cron from "node-cron";
 
 //middlewares
 import { createTResult } from "@src/core/mappers/tresult.mapper";
 
 //router
 import apiRouter from "@src/modules/api.router";
-import { apiValidator } from "./core/middlewares/schema-validator.middleware";
 
 //server
 const app = express();
