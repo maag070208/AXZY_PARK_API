@@ -61,7 +61,11 @@ export const getLastEntryByUser = async (userId: number) => {
 export const getUniqueVehiclesByUser = async (userId: number) => {
     // Determine unique vehicles by plates
     const vehicles = await prisma.vehicleEntry.findMany({
-        where: { userId, softDelete: false },
+        where: { 
+            userId, 
+            softDelete: false,
+            status: { in: [EntryStatus.ACTIVE, EntryStatus.MOVED] } 
+        },
         orderBy: { createdAt: 'desc' },
         take: 10,
         select: {
@@ -71,7 +75,15 @@ export const getUniqueVehiclesByUser = async (userId: number) => {
             model: true,
             color: true,
             plates: true,
-            photos: true
+            photos: true,
+            status: true,
+            entryDate: true,
+            locationId: true,
+            location: true,
+            assignments: {
+                where: { status: "ACTIVE" }
+            },
+            extraCosts: true
         }
     });
     return vehicles;

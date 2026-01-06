@@ -49,3 +49,11 @@ export const updateUser = async (id: number, data: any) => {
   });
 };
 
+export const getUserById = async (id: number) => {
+  return prismaClient.user.findUnique({
+    where: {
+      id,
+    },
+  });
+};
+
