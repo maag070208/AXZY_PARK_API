@@ -21,5 +21,8 @@ apiRouter.use("/exits", exitsRoute);
 apiRouter.use("/uploads", uploadRoute);
 apiRouter.use("/key-assignments", keyAssignmentsRoute);
 apiRouter.use("/extra-costs", extraCostsRoute);
+apiRouter.use("/reports", require("./reports/reports.routes").default);
+apiRouter.use("/config", require("./config/config.routes").default);
+apiRouter.use("/vehicle-types", require("./vehicle-types/vehicle-types.routes").default);
 
 export default apiRouter;

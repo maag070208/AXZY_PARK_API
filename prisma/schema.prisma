@@ -51,6 +51,8 @@ model User {
   role       Role
   active     Boolean  @default(true)
   softDelete Boolean  @default(false)
+  shiftStart String? // HH:mm
+  shiftEnd   String? // HH:mm
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
@@ -119,7 +121,25 @@ model VehicleEntry {
   movements   VehicleMovement[]
   assignments KeyAssignment[]
   extraCosts  ExtraCost[]
-  exit        VehicleExit?
+
+  series        String?
+  exit          VehicleExit?
+  vehicleTypeId Int?
+  vehicleType   VehicleType? @relation(fields: [vehicleTypeId], references: [id])
+}
+
+////////////////////////////////////////////////////
+// VEHICLE TYPES (CATALOGO)
+////////////////////////////////////////////////////
+
+model VehicleType {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  cost      Float
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  entries VehicleEntry[]
 }
 
 ////////////////////////////////////////////////////
@@ -169,6 +189,7 @@ model VehicleExit {
   exitDate       DateTime   @default(now())
   status         ExitStatus
   notes          String?
+  finalCost      Float      @default(0)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -230,4 +251,15 @@ model ExtraCost {
   entry    VehicleEntry @relation(fields: [entryId], references: [id])
   user     User         @relation("CostOwner", fields: [userId], references: [id])
   operator User         @relation("CostOperator", fields: [operatorId], references: [id])
+}
+
+////////////////////////////////////////////////////
+// SYSTEM CONFIG
+////////////////////////////////////////////////////
+
+model SystemConfig {
+  id        Int      @id @default(autoincrement())
+  key       String   @unique // e.g., 'PARKING_SETTINGS'
+  value     Json // e.g., { "maxCapacity": 200 }
+  updatedAt DateTime @updatedAt
 }

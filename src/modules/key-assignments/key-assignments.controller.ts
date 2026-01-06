@@ -53,7 +53,11 @@ export const finishAssignment = async (req: Request, res: Response) => {
 
     const assignment = await prisma.keyAssignment.findUnique({
         where: { id: Number(id) },
-        include: { entry: true }
+        include: { 
+            entry: {
+                include: { vehicleType: true }
+            } 
+        }
     });
 
     if (!assignment) {
@@ -67,6 +71,22 @@ export const finishAssignment = async (req: Request, res: Response) => {
     let updated;
 
     if (assignment.type === "DELIVERY") {
+        // 1. Get Config for Cost (Fallback)
+        const config = await prisma.systemConfig.findUnique({
+             where: { key: "PARKING_SETTINGS" }
+        });
+        const defaultDayCost = (config?.value as any)?.dayCost || 60;
+        
+        // Use vehicle type cost if available
+        const dayCost = (assignment.entry as any).vehicleType?.cost || defaultDayCost;
+
+        // 2. Calculate Cost
+        const now = new Date();
+        const durationMs = now.getTime() - new Date(assignment.entry.entryDate).getTime();
+        const durationHours = durationMs / (1000 * 60 * 60);
+        const days = Math.max(1, Math.ceil(durationHours / 24));
+        const finalCost = days * dayCost;
+
         // Transaction to finish assignment, mark entry as exited, free location, AND create exit record
         const [assignmentUpdated] = await prisma.$transaction([
             prisma.keyAssignment.update({
@@ -89,7 +109,8 @@ export const finishAssignment = async (req: Request, res: Response) => {
                     entryId: assignment.entryId,
                     operatorUserId: assignment.operatorUserId,
                     status: "DELIVERED",
-                    notes: "Salida automática por entrega de llaves"
+                    notes: "Salida automática por entrega de llaves",
+                    finalCost: finalCost
                 }
             })
         ]);

@@ -45,7 +45,8 @@ export const getEntryById = async (id: number) => {
       extraCosts: {
           include: { operator: true },
           orderBy: { createdAt: 'desc' }
-      }
+      },
+      vehicleType: true
     },
   });
 };
@@ -83,10 +84,12 @@ interface CreateEntryDTO {
   model: string;
   color: string;
   plates?: string;
+  series?: string; // Added series
   mileage?: number;
   notes?: string;
   photos: { category: string; imageUrl: string; description?: string }[];
   locationId?: number;
+  vehicleTypeId?: number;
 }
 
 export const createVehicleEntry = async (data: CreateEntryDTO) => {
@@ -115,11 +118,13 @@ export const createVehicleEntry = async (data: CreateEntryDTO) => {
         userId: data.userId,
         operatorUserId: data.operatorUserId,
         locationId: location.id,
+        vehicleTypeId: data.vehicleTypeId,
         status: EntryStatus.ACTIVE,
         brand: data.brand,
         model: data.model,
         color: data.color,
         plates: data.plates || '', 
+        series: data.series, // Added series
         mileage: data.mileage,
         notes: data.notes,
         photos: {

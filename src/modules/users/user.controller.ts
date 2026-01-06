@@ -42,7 +42,7 @@ export const getAllUsers = async (req: Request, res: Response) => {
 
 export const createUser = async (req: Request, res: Response) => {
   try {
-    const { name, lastName, email, password, role } = req.body;
+    const { name, lastName, email, password, role, shiftStart, shiftEnd } = req.body;
 
     const existing = await getUserByEmail(email);
     if (existing) {
@@ -59,6 +59,8 @@ export const createUser = async (req: Request, res: Response) => {
       email,
       password: hashed,
       role: role ?? "USER",
+      shiftStart,
+      shiftEnd
     });
 
     return res.status(201).json(createTResult(user));

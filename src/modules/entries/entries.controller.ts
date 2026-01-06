@@ -89,17 +89,21 @@ export const addEntry = async (req: Request, res: Response) => {
         });
     }
 
+    const { userId, operatorUserId, brand, model, color, plates, mileage, notes, locationId, vehicleTypeId, series } = body;
+
     const newEntry = await createVehicleEntry({
-        userId: Number(body.userId),
-        operatorUserId: Number(body.operatorUserId),
-        brand: body.brand,
-        model: body.model,
-        color: body.color,
-        plates: body.plates,
-        mileage: Number(body.mileage),
-        notes: body.notes,
+        userId: Number(userId),
+        operatorUserId: Number(operatorUserId),
+        brand,
+        model,
+        color,
+        plates,
+        series, // passing series
+        mileage: mileage ? Number(mileage) : undefined,
+        notes,
         photos: photosData,
-        locationId: body.locationId ? Number(body.locationId) : undefined
+        locationId: locationId ? Number(locationId) : undefined,
+        vehicleTypeId: vehicleTypeId ? Number(vehicleTypeId) : undefined,
     });
 
     return res.status(201).json(createTResult(newEntry));

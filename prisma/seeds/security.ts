@@ -41,6 +41,8 @@ const operatorSeed = async (prisma: PrismaClient) => {
       email: "operator@park.com",
       password,
       role: Role.OPERATOR,
+      shiftStart: "08:00",
+      shiftEnd: "16:00"
     },
   });
 };
